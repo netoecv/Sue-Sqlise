@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD CoordenadorCurso</title>
+    <style>
+      /* Estilo geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Navbar */
+nav {
+    background-color: #2980b9;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #1abc9c;
+}
+
+/* Formulário */
+form {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1abc9c;
+}
+
+button[type="submit"] {
+    margin-right: 10px;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #2980b9;
+    color: white;
+}
+
+td button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #c0392b;
+}
+
+td form {
+    display: inline;
+}
+
+td form button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td form button:hover {
+    background-color: #c0392b;
+}
+
+    </style>
+  </head>
+  <body>
+    <%- include('navbar')%>
+    <h1>CRUD de Coordenador-Curso</h1>
+
+  <form action="/editar_coordenadorcurso" method="POST">
+  <label for="coordenador">Coordenador:</label>
+  <select id="coordenador" name="coordenador" required>
+    <% coordenador.forEach(function(coordenador) { %>
+    <option value="<%= coordenador.id_Coordenador %>" data-id="<%= coordenador.id_Coordenador %>">
+        <%= coordenador.nome_coordenador %>
+        </option>
+        <% }); %>
+      </select>
+      <br />
+
+      <label for="curso">Curso:</label>
+      <select id="curso" name="curso" required>
+        <% curso.forEach(function(curso) { %>
+        <option value="<%= curso.id_Curso %>" data-id="<%= curso.id_Curso %>">
+          <%= curso.nome_curso %>
+        </option>
+        <% }); %>
+      </select>
+      <br />
+   
+      
+      <button type="submit" name="action" value="incluir">Incluir</button>
+      <input type="hidden" id="id_Coordenador" name="id_Coordenador" />
+      <input type="hidden" id="id_Curso" name="id_Curso" />
+    </form>
+
+    <!-- Tabela para exibir as associações entre curso e disciplina -->
+    <h2>Associações entre Curso e Disciplina</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Coordenador</th>
+          <th>Curso</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% coordenadorcursoVW.forEach(function(coordenadorcursoVW) { %>
+        <tr>
+          <td><%= coordenadorcursoVW.nome_coordenador %></td>
+          <td><%= coordenadorcursoVW.nome_curso %></td>
+          <td>
+            <!-- Botão para editar associação -->
+            <button
+              onclick="preencherFormulario('<%= coordenadorcursoVW.id_Coordenador %>', '<%= coordenadorcursoVW.id_Curso %>')"
+            >
+              Editar
+            </button>
+            <!-- Formulário para excluir associação -->
+            <form
+              action="/excluir_coordenadorcurso/<%= coordenadorcursoVW.id_Coordenador %>/<%= coordenadorcursoVW.id_Curso %>"
+              method="POST"
+            >
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <script>
+      // Funções para obter nomes a partir dos IDs
+      function getCoordenadorNome(id_Coordenador) {
+        const coordenador = "<%= JSON.stringify(coordenador) %>";
+        const Coordenador = coordenador.find((c) => c.id_Coordenador === id_Coordenador);
+        return coordenador ? coordenador.nome_coordenador : "Coordenador não encontrado";
+      }
+
+      function getCursoNome(id_Curso) {
+        const curso = "<%= JSON.stringify(curso) %>";
+        const Curso = curso.find(
+          (c) => c.id_Curso === id_Curso
+        );
+        return curso
+          ? curso.nome_curso
+          : "Curso não encontrada";
+      }
+      // Função para preencher os campos do formulário ao clicar em editar
+      function preencherFormulario(coordenadorId, cursoId) {
+        document.getElementById("coordenador").value = coordenadorId;
+        document.getElementById("curso").value = cursoId;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Professor-Disciplinas</title>
+    <style>
+      /* Estilo geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Navbar */
+nav {
+    background-color: #2980b9;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #1abc9c;
+}
+
+/* Formulário */
+form {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1abc9c;
+}
+
+button[type="submit"] {
+    margin-right: 10px;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #2980b9;
+    color: white;
+}
+
+td button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #c0392b;
+}
+
+td form {
+    display: inline;
+}
+
+td form button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td form button:hover {
+    background-color: #c0392b;
+}
+
+    </style>
+  </head>
+  <body>
+    <%- include('navbar')%>
+    <h1>CRUD de Professor-Disciplinas</h1>
+
+    <form action="/editar_professordisciplina" method="POST">
+      <label for="professor">Professor:</label>
+      <select id="professor" name="professor" required>
+        <% professor.forEach(function(professor) { %>
+        <option value="<%= professor.id_professor %>" data-id="<%= professor.id_professor %>">
+          <%= professor.nome_professor %>
+        </option>
+        <% }); %>
+      </select>
+      <br />
+
+      <label for="disciplina">Disciplina:</label>
+      <select id="disciplina" name="disciplina" required>
+        <% disciplinas.forEach(function(disciplina) { %>
+        <option
+          value="<%= disciplina.id_disciplina %>"
+          data-id="<%= disciplina.id_disciplina %>"
+        >
+          <%= disciplina.nome_disciplina %>
+        </option>
+        <% }); %>
+      </select>
+      <br />
+
+    
+      <button type="submit" name="action" value="incluir">Incluir</button>
+      <input type="hidden" id="id_professor" name="id_professor" />
+      <input type="hidden" id="id_disciplina" name="id_disciplina" />
+    </form>
+
+    <h2>Associações entre Professor e Disciplina</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Professor</th>
+          <th>Disciplina</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% professordisciplinaVW.forEach(function(professordisciplinaVW) { %>
+        <tr>
+          <td><%= professordisciplinaVW.nome_professor %></td>
+          <td><%= professordisciplinaVW.nome_disciplina %></td>
+          <td>
+            <button
+              onclick="preencherFormulario('<%= professordisciplinaVW.id_professor %>', '<%= professordisciplinaVW.id_disciplina %>')"
+            >
+              Editar
+            </button>
+            <form
+              action="/excluir_professordisciplina/<%= professordisciplinaVW.id_professor %>/<%= professordisciplinaVW.id_disciplina %>"
+              method="POST"
+            >
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <script>
+      function getProfessorNome(id_Professor) {
+        const professor= "<%= JSON.stringify(professor) %>";
+        const Professor = professor.find((p) => p.id_professor === id_professor);
+        return professor ? professor.nome_professor : "Professor não encontrado";
+      }
+
+      function getDisciplinaNome(id_disciplina) {
+        const disciplina = "<%= JSON.stringify(disciplinas) %>";
+        const Disciplinas = disciplina.find(
+          (d) => d.id_disciplina === id_disciplina
+        );
+        return disciplina
+          ? disciplina.nome_disciplina
+          : "Disciplina não encontrada";
+      }
+      function preencherFormulario(professorId, disciplinaId) {t
+        document.getElementById("professor").value = professorId;
+        document.getElementById("disciplina").value = disciplinaId;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Disciplina-Curso</title>
+    <style>
+      /* Estilo geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Navbar */
+nav {
+    background-color: #2980b9;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #1abc9c;
+}
+
+/* Formulário */
+form {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1abc9c;
+}
+
+button[type="submit"] {
+    margin-right: 10px;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #2980b9;
+    color: white;
+}
+
+td button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #c0392b;
+}
+
+td form {
+    display: inline;
+}
+
+td form button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td form button:hover {
+    background-color: #c0392b;
+}
+
+    </style>
+  </head>
+  <body>
+    <%- include('navbar')%>
+    <h1>CRUD de Disciplina-Curso</h1>
+
+    <!-- Formulário para adicionar ou editar associação entre curso e disciplina -->
+    <form action="/editar_disciplinacurso" method="POST">
+      <!-- Select para escolher o curso -->
+      <label for="curso">Curso:</label>
+      <select id="curso" name="curso" required>
+        <% curso.forEach(function(curso) { %>
+        <option value="<%= curso.id_Curso %>" data-id="<%= curso.id_Curso %>">
+          <%= curso.nome_curso %>
+        </option>
+        <% }); %>
+      </select>
+      <br />
+
+      <!-- Select para escolher a disciplina -->
+      <label for="disciplina">Disciplina:</label>
+      <select id="disciplina" name="disciplina" required>
+        <% disciplinas.forEach(function(disciplina) { %>
+        <option
+          value="<%= disciplina.id_disciplina %>"
+          data-id="<%= disciplina.id_disciplina %>"
+        >
+          <%= disciplina.nome_disciplina %>
+        </option>
+        <% }); %>
+      </select>
+      <br />
+
+      <!-- Botões para confirmar a inclusão ou edição -->
+      <button type="submit" name="action" value="incluir">Incluir</button>
+      <input type="hidden" id="id_Curso" name="id_Curso" />
+      <input type="hidden" id="id_disciplina" name="id_disciplina" />
+    </form>
+
+    <!-- Tabela para exibir as associações entre curso e disciplina -->
+    <h2>Associações entre Curso e Disciplina</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Curso</th>
+          <th>Disciplina</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% disciplinacursoVW.forEach(function(disciplinacursoVW) { %>
+        <tr>
+          <td><%= disciplinacursoVW.nome_curso %></td>
+          <td><%= disciplinacursoVW.nome_disciplina %></td>
+          <td>
+            <!-- Botão para editar associação -->
+            <button
+              onclick="preencherFormulario('<%= disciplinacursoVW.id_Curso %>', '<%= disciplinacursoVW.id_disciplina %>')"
+            >
+              Editar
+            </button>
+            <!-- Formulário para excluir associação -->
+            <form
+              action="/excluir_disciplinacurso/<%= disciplinacursoVW.id_Curso %>/<%= disciplinacursoVW.id_disciplina %>"
+              method="POST"
+            >
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <script>
+      // Funções para obter nomes a partir dos IDs
+      function getCursoNome(id_Curso) {
+        const curso = "<%= JSON.stringify(curso) %>";
+        const Curso = curso.find((c) => c.id_Curso === id_Curso);
+        return curso ? curso.nome_curso : "Curso não encontrado";
+      }
+
+      function getDisciplinaNome(id_disciplina) {
+        const disciplinas = "<%= JSON.stringify(disciplinas) %>";
+        const disciplina = disciplinas.find(
+          (d) => d.id_disciplina === id_disciplina
+        );
+        return disciplina
+          ? disciplina.nome_disciplina
+          : "Disciplina não encontrada";
+      }
+      // Função para preencher os campos do formulário ao clicar em editar
+      function preencherFormulario(cursoId, disciplinaId) {
+        document.getElementById("curso").value = cursoId;
+        document.getElementById("disciplina").value = disciplinaId;
+      }
+    </script>
+  </body>
+</html>

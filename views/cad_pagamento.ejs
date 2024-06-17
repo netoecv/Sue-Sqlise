@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD de Pagamento</title>
+  <style>
+    /* Estilo geral */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+h1, h2 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+/* Navbar */
+nav {
+  background-color: #2980b9;
+  padding: 10px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 14px 20px;
+  display: inline-block;
+}
+
+nav a:hover {
+  background-color: #1abc9c;
+}
+
+/* Formulário */
+form {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #bdc3c7;
+  border-radius: 3px;
+}
+
+button {
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1abc9c;
+}
+
+button[type="submit"] {
+  margin-right: 10px;
+}
+
+/* Tabela */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #2980b9;
+  color: white;
+}
+
+td button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+td button:hover {
+  background-color: #c0392b;
+}
+
+td form {
+  display: inline;
+}
+
+td form button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+td form button:hover {
+  background-color: #c0392b;
+}
+
+  </style>
+</head>
+<body>
+  <%- include('navbar')%>
+  <h1>CRUD de Pagamento</h1>
+
+  <form action="/editar_pagamento" method="POST">
+    <label for="valor">Valor:</label>
+    <input type="number" id="valor" name="valor" required>
+    <br>
+    <label for="data">Data:</label>
+    <input type="date" id="data" name="data" required>
+    <br>
+    <label for="nome_pagamento">Nome do pagamento:</label>
+    <input type="text" id="nome_pagamento" name="nome_pagamento" required>
+    <br>
+    <label for="taxa">Taxa:</label>
+    <input type="number" id="taxa" name="taxa">
+    <br>
+    <label for="desconto">Desconto:</label>
+    <input type="number" id="desconto" name="desconto">
+    <br>
+    <label for="Valor_Total">Valor Total:</label>
+    <input type="number" id="Valor_Total" name="Valor_Total">
+    <br>
+    <button type="submit" name="action" value="alterar">Alterar</button>
+    <button type="submit" name="action" value="incluir">Incluir</button>
+    <input type="hidden" id="id_Pagamento" name="id_Pagamento">
+  </form>
+
+  <h2>Relação de Pagamentos</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Valor</th>
+        <th>Data</th>
+        <th>Nome do pagamento</th>
+        <th>Taxa</th>
+        <th>desconto</th>
+        <th>Valor Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pagamento.forEach(function(pagamento) { %>
+        <tr>
+          <td><%= pagamento.valor %></td>
+          <td><%= pagamento.data %></td>
+          <td><%= pagamento.nome_pagamento %></td>
+          <td><%= pagamento.taxa %></td>
+          <td><%= pagamento.desconto %></td>
+          <td><%= pagamento.Valor_Total %></td>
+        
+          <td>
+            <!-- Botão para editar pagamento -->
+            <button onclick="preencherFormulario('<%= pagamento.valor %>','<%= pagamento.data %>', '<%= pagamento.nome_pagamento %>', '<%= pagamento.taxa %>', '<%= pagamento.desconto %>',  '<%= pagamento.Valor_Total %>')">
+              Editar
+            </button>
+            <!-- Botão para excluir pagamento -->
+            <form action="/excluir_pagamento/<%= pagamento.id_Pagamento %>" method="POST">
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <script>
+    // Função para preencher os campos do formulário ao clicar em editar
+    function preencherFormulario( valor, data, nome_pagamento,taxa, desconto, Valor_Total,id_Pagamento) {
+      
+      document.getElementById("valor").value = valor;
+      document.getElementById("data").value = data;
+      document.getElementById("nome_pagamento").value = nome_pagamento;
+      document.getElementById("taxa").value = taxa;
+      document.getElementById("desconto").value = desconto;
+      document.getElementById("Valor_Total").value = Valor_Total;
+      document.getElementById("id_Pagamento").value = id_Pagamento;
+      
+    }
+  </script>
+</body>
+</html>

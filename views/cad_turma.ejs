@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turmas</title>
+    <style>
+      /* Estilo geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Navbar */
+nav {
+    background-color: #2980b9;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #1abc9c;
+}
+
+/* Formulário */
+form {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1abc9c;
+}
+
+button[type="submit"] {
+    margin-right: 10px;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #2980b9;
+    color: white;
+}
+
+td button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #c0392b;
+}
+
+td form {
+    display: inline;
+}
+
+td form button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td form button:hover {
+    background-color: #c0392b;
+}
+
+    </style>
+</head>
+<body>
+  <%- include('navbar')%>
+    <h1>Gerenciar Turmas</h1>
+
+    <!-- Formulário para criar uma nova turma -->
+    
+    <form action="/editar_turma" method="POST">
+        <label for="ano">Ano:</label>
+        <input type="number" id="ano" name="ano" required>
+        <br>
+        <label for="semestre">Semestre:</label>
+        <input type="number" id="semestre" name="semestre" required>
+        <br>
+        <label for="nome_turma">Nome :</label>
+        <input type="text" id="nome_turma" name="nome_turma" required>
+        <br>
+        <button type="submit" name="action" value="alterar">Alterar</button>
+        <button type="submit" name="action" value="incluir">Incluir</button>
+        <input type="hidden" id="id_Turma" name="id_Turma" value="" />
+      </form> 
+
+      <h2>Turmas</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Ano</th>
+          <th>Nome</th>
+          <th>Semestre</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% turma.forEach(function(turma) { %>
+        <tr>
+          <td><%= turma.ano %></td>
+          <td><%= turma.nome_turma %></td>
+          <td><%= turma.semestre %></td>
+          <td>
+            <button
+              onclick="preencherFormulario('<%= turma.ano %>','<%= turma.nome_turma %>', '<%= turma.semestre %>', '<%= turma.id_Turma %>')"
+            >
+              Editar
+            </button>
+           
+            <form
+              action="/excluir_turma/<%= turma.id_Turma %>"
+              method="POST"
+            >
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <script>
+     
+      function preencherFormulario(
+        nome_turma,
+        ano,
+        semestre,
+        id_Turma
+      ) {
+        document.getElementById("nome_turma").value = nome_turma;
+        document.getElementById("ano").value = ano;
+        document.getElementById("semestre").value = semestre;
+        document.getElementById("id_Turma").value = id_Turma;
+      }
+    </script>
+  </body>
+</html>

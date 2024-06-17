@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Aluno</title>
+    <style>
+      /* Estilo geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Navbar */
+nav {
+    background-color: #2980b9;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #1abc9c;
+}
+
+/* Formulário */
+form {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1abc9c;
+}
+
+button[type="submit"] {
+    margin-right: 10px;
+}
+
+/* Tabela */
+table {
+    width: 100px;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #2980b9;
+    color: white;
+}
+
+td button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #c0392b;
+}
+
+td form {
+    display: inline;
+}
+
+td form button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+td form button:hover {
+    background-color: #c0392b;
+}
+
+    </style>
+  </head>
+  <body>
+    <%- include('navbar')%>
+    <h1>CRUD do Aluno</h1>
+    
+    
+    <form action="/editar_aluno" method="POST">
+      <label for="nome_aluno">Nome:</label>
+      <input type="text" id="nome_aluno" name="nome_aluno" required />
+      <br />
+      <label for="Num_Matricula">Número Matricula:</label>
+      <input type="number" id="Num_Matricula" name="Num_Matricula" required />
+      <br />
+      <label for="Estado_Matricula">Estado Matricula:</label>
+      <input type="text" id="Estado_Matricula" name="Estado_Matricula" required />
+      <br />
+      <button type="submit" name="action" value="alterar">Alterar</button>
+      <button type="submit" name="action" value="incluir">Incluir</button>
+      <input type="hidden" id="id_Aluno" name="id_Aluno" />
+    </form>
+
+    
+    <h2>Relação de Alunos Matriculados</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Número matrícula</th>
+          <th>Estado da matricula</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% aluno.forEach(function(aluno) { %>
+          <tr>
+            <td><%= aluno.nome_aluno %></td>
+            <td><%= aluno.Num_Matricula %></td>
+            <td><%= aluno.Estado_Matricula %></td>
+            <td>
+              <!-- Botão para editar coordenador -->
+              <button onclick="preencherFormulario('<%= aluno.id_Aluno %>', '<%= aluno.nome_aluno %>', '<%= aluno.Num_Matricula %>', '<%= aluno.Estado_Matricula %>')">
+                Editar
+              </button>
+              <!-- Botão para excluir coordenador -->
+              <form action="/excluir_aluno/<%= aluno.id_Aluno %>" method="POST">
+                <button type="submit">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <script>
+      // Função para preencher os campos do formulário ao clicar em editar
+      function preencherFormulario(id_Aluno, nome_aluno, Num_Matricula, Estado_Matricula) {
+        document.getElementById("id_Aluno").value = id_Aluno;
+        document.getElementById("nome_aluno").value = nome_aluno;
+        document.getElementById("Num_Matricula").value = Num_Matricula;
+        document.getElementById("Estado_Matricula").value = Estado_Matricula;
+      }
+    </script>
+  </body>
+</html>
